@@ -12,7 +12,8 @@ app = Flask(__name__)
 @app.route('/v1/json', methods=['POST'])
 def json():
     id = request.get_json()['id']
-    proxies = read_from_txt("proxies.txt")
+    # proxies = read_from_txt("proxies.txt")
+    proxies = None
     try:
         data = NYCScraper(id, proxies=proxies).run()
         return {

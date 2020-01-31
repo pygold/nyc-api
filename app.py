@@ -41,5 +41,6 @@ def read_from_txt(filename):
 
 if __name__ == "__main__":
     # app.run(port=8000)
-    Thread(target = lambda: app.run(host = '0.0.0.0', port=8000)).start()
+    app.run()
+    # Thread(target = lambda: app.run(host = '0.0.0.0', port=8000)).start()
 

@@ -13,15 +13,15 @@ app = Flask(__name__)
 def json():
     id = request.get_json()['id']
     # proxies = read_from_txt("proxies.txt")
-    proxies = None
+    proxies = []
     try:
         data = NYCScraper(id, proxies=proxies).run()
         return {
             "data" : data
         }, 200
-    except:
+    except Exception as e:
         return  {
-            "data" : "Server Error"
+            "data" : repr(e)
         }, 500
 
 def read_from_txt(filename):

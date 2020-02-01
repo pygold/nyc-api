@@ -13,7 +13,6 @@ app = Flask(__name__)
 def json():
     id = request.get_json()['id']
     proxies = read_from_txt("proxies.txt")
-    # proxies = []
     try:
         data = NYCScraper(id, proxies=proxies).run()
         return {
@@ -42,6 +41,6 @@ def read_from_txt(filename):
 
 if __name__ == "__main__":
     # app.run(port=8000)
-    app.run()
-    # Thread(target = lambda: app.run(host = '0.0.0.0', port=8000)).start()
+    app.run(host ='0.0.0.0', port=5000)
+    # Thread(target = lambda: app.run(host ='0.0.0.0', port=5000)).start()
 

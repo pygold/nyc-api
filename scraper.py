@@ -57,7 +57,9 @@ class NYCScraper():
             }
 
     def run(self):
+        i = 0
         while True:
+            i += 1
             if len(self.proxies):
                 proxies = get_proxy(self.proxies)
             else:
@@ -66,6 +68,14 @@ class NYCScraper():
                 response = self.session.get(self.url, headers=self.headers, proxies=proxies, params=self.params, timeout=10)
                 break
             except Exception as e:
+                if i == 20:
+                    return {
+                        "success" : False,
+                        "licenseID" : self.id,
+                        "message" : {
+                            "errorText" :  "Connection Error : {}".format(repr(e))
+                        }
+                    }
                 continue
         if response.status_code == 200:
             return self.get_json(response)
@@ -95,10 +105,11 @@ class NYCScraper():
         lower_text = response.text.lower()
         if "license record not found" in lower_text:
             return {
-                "success" : False,
+                "success" : True,
                 "licenseID" : self.id,
+                "is_data_exist" : False,
                 "message" : {
-                    "errorText" : "LICENSE RECORD NOT FOUND"
+                    "text" : "LICENSE RECORD NOT FOUND"
                 }
             }
         elif "your request is being processed" in lower_text:
@@ -109,6 +120,15 @@ class NYCScraper():
                     "errorText" : "Your request is being processed, Due to the high demand it may take a little longer. Please retry after a few minutes"
                 }
             }
+        elif "you don't have permission to access" in lower_text:
+            return {
+                "success" : False,
+                "licenseID" : self.id,
+                "message" : {
+                    "errorText" : "You don't have permission to access on this server"
+                }
+            }
+
         try:
             table_soup = soup.find('table', {"width" : "750"})
             data_rows = table_soup.find_all('tr', recursive=False)
@@ -229,6 +249,7 @@ class NYCScraper():
         return {
             "success" : True,
             "licenseID" : self.id,
+            "is_data_exist": True,
             "message" : self.data
         }
 
